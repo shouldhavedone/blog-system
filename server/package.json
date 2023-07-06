@@ -1,5 +1,5 @@
 {
-  "name": "system_mangage",
+  "name": "server",
   "version": "0.0.1",
   "description": "",
   "author": "",
@@ -22,9 +22,24 @@
   "dependencies": {
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
+    "@nestjs/jwt": "^10.1.0",
+    "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^9.0.0",
+    "@nestjs/swagger": "^7.0.12",
+    "@nestjs/typeorm": "^10.0.0",
+    "bcrypt": "^5.1.0",
+    "express-session": "^1.17.3",
+    "mysql": "^2.18.1",
+    "passport": "^0.6.0",
+    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
-    "rxjs": "^7.2.0"
+    "rxjs": "^7.2.0",
+    "svg-captcha": "^1.4.0",
+    "svg2img": "^1.0.0-beta.2",
+    "swagger-ui-express": "^4.6.3",
+    "typeorm": "^0.3.17",
+    "util": "^0.12.5",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
