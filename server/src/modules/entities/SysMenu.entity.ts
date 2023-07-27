@@ -7,12 +7,16 @@ import {
   OneToMany,
   ManyToOne,
   ManyToMany,
+  TreeChildren,
+  TreeParent,
+  Tree
 } from 'typeorm';
 
 import { SysUser } from './SysUser.entity';
 import { SysRole } from './SysRole.entity'
 
 @Entity('sys_menu')
+@Tree("nested-set")
 export class SysMenu {
   // 主键
   @PrimaryGeneratedColumn({
@@ -30,6 +34,12 @@ export class SysMenu {
 
   @OneToMany(() => SysMenu, menu => menu.parentId)
   parentIds: SysMenu[];
+
+  // @TreeChildren()
+  // children: SysMenu[]
+
+  // @TreeParent()
+  // parent: SysMenu
 
   // 父节点id路径
   @Column("varchar", {

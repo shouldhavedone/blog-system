@@ -22,6 +22,10 @@ export class AuthService {
     return await this.sysUserRepository.find({})
   }
 
+  /**
+   * 生成验证码图片
+   * @param size 验证码长度
+   */
   async captche(size = 4) {
     const captcha = svgCaptcha.create({  //可配置返回的图片信息
       size, //生成几个验证码
@@ -38,11 +42,19 @@ export class AuthService {
     };
   }
 
+  /**
+   * 生成token
+   * @param user 
+   */
   async generateToken(user: SysUser): Promise<string> {
     const payload = { username: user.username };
     return this.jwtService.sign(payload);
   }
 
+  /**
+   * 校验token
+   * @param token 
+   */
   async validateToken(token: string): Promise<boolean> {
     try {
       await this.jwtService.verifyAsync(token);
@@ -52,6 +64,11 @@ export class AuthService {
     }
   }
 
+  /**
+   * 校验登录账号
+   * @param username 
+   * @param password 
+   */
   async validateUser(username: string, password: string): Promise<SysUser> {
     const user = await this.sysUserRepository.findOneBy({ username });
     if (!user) return null;
@@ -59,5 +76,18 @@ export class AuthService {
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) return null;
     return user;
+  }
+
+  /**
+   * 解析token中的用户名
+   * @param token 
+   */
+  extractUsernameFromToken(authorizationHeader: string): string {
+    const token = authorizationHeader.replace('Bearer ', '');
+    const decodedToken = this.jwtService.decode(token) as { username: string };
+    if (decodedToken) {
+      return decodedToken.username;
+    }
+    return null;
   }
 }

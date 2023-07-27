@@ -19,7 +19,6 @@ export class AuthController {
 
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
-    type: GetDataDto,
   })
 
   @Get('captcha')
@@ -42,12 +41,11 @@ export class AuthController {
 
   @ApiCreatedResponse({
     description: 'The record has been successfully created.',
-    type: LoginPostDataDto,
   })
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  async login(@Body() data: LoginPostDataDto, @Res() res, @Req() req) {
-    const { verifyCodeKey, verifyCode } = data;
+  async login(@Res() res, @Req() req, @Body() data: LoginPostDataDto) {
+    const { verifyCodeKey, verifyCode, username, password } = data;
     // 判断验证码是否过期
     if (verifyCodeKey !== req.session.captchaUuid) {
       res.send({
@@ -64,7 +62,7 @@ export class AuthController {
       })
       return false;
     }
-    const user = await this.authService.validateUser(data.username, data.password);
+    const user = await this.authService.validateUser(username, password);
     if (!user) {
       res.send({
         code: "B0001",
