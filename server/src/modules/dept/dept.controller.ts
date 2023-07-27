@@ -1,10 +1,9 @@
 import { Controller, Get, Res, Headers, Req, Query } from "@nestjs/common";
 import { DeptService } from "./dept.service";
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DeptQueryDto } from './dept.dto';
-import { filter } from "rxjs";
 
-@ApiTags("dept")
+@ApiTags("部门管理相关")
 @Controller("/api/v1/dept")
 
 export class DeptController {
@@ -14,10 +13,8 @@ export class DeptController {
   ) { }
 
 
-  @ApiCreatedResponse({
-
-  })
-
+  
+  @ApiOperation({ summary: '获取部门列表' })
   @Get('')
   async getDetpList(@Res() res, @Query() query: DeptQueryDto) {
     const data = await this.deptService.getDeptList(query)
@@ -30,10 +27,8 @@ export class DeptController {
   }
 
 
-  @ApiCreatedResponse({
-
-  })
-
+  
+  @ApiOperation({ summary: '获取部门列表-下拉选项' })
   @Get('options')
   async getAllDetpList(@Res() res) {
     const result = await this.deptService.getAllDeptList()
@@ -48,8 +43,6 @@ export class DeptController {
     return;
   }
 
-
-
   filterToOption(data: any) {
     if (!data || data.length === 0) {
       return [];
@@ -58,10 +51,10 @@ export class DeptController {
       const newNode = {
         label: node.name,
         value: node.id,
-        children: node.children,
+        children: node?.children,
       };
       if (node.children && node.children.length > 0) {
-        newNode.children = this.filterToOption(node.children); // 递归处理子节点
+        newNode.children = this.filterToOption(node.children);
       }
       return newNode;
     });

@@ -1,11 +1,11 @@
 import { Controller, Get, Res, Headers, Query } from "@nestjs/common";
-import { ApiCreatedResponse, ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
 import { AuthService } from '../auth/auth.service';
 import { MenuDto, QueryMenuDto } from './menu.dto';
 import { SysMenu } from '../entities/SysMenu.entity';
 
-@ApiTags("menu")
+@ApiTags("菜单管理相关")
 @Controller("/api/v1/menus")
 
 export class MenuController {
@@ -15,9 +15,8 @@ export class MenuController {
     private readonly authService: AuthService
   ) { }
 
-  @ApiCreatedResponse({
-    description: "菜单路由"
-  })
+
+  @ApiOperation({ summary: '获取登录角色菜单路由' })
   @Get("routes")
   async getMenuRoutes(@Headers("authorization") authorizationHeader, @Res() res) {
     const username = this.authService.extractUsernameFromToken(authorizationHeader)
@@ -32,10 +31,7 @@ export class MenuController {
   }
 
   @Get("")
-  @ApiOperation({ summary: '获取菜单列表' }) // API操作的注释
-  @ApiCreatedResponse({
-    description: "菜单路由列表",
-  })
+  @ApiOperation({ summary: '获取菜单路由列表' })
   async getAllMenu(@Res() res, @Query() query: QueryMenuDto) {
     const data = await this.menuService.getAllMenu(query)
     res.send({

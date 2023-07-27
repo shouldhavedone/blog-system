@@ -1,13 +1,13 @@
-import { Body, Controller, Get, Res, Post, Session, Req, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Res, Post, Session, Req, UseGuards, Delete, Query } from '@nestjs/common';
 import { GetDataDto, LoginPostDataDto } from "./auth.dto";
 import { AuthService } from "./auth.service";
 import { UserService } from "../user/user.service";
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { v4 as uuidv4 } from 'uuid'
 
 import { AuthGuard } from '@nestjs/passport';
 
-@ApiTags("auth")
+@ApiTags("用户权限/登录相关")
 @Controller('/api/v1/auth')
 
 export class AuthController {
@@ -17,16 +17,13 @@ export class AuthController {
     private readonly userService: UserService,
   ) { }
 
-  @ApiCreatedResponse({
-    description: 'The record has been successfully created.',
-  })
-
+  @ApiOperation({ summary: '获取图片验证码' })
   @Get('captcha')
-  async generateCaptcha(@Res() res, @Session() session) {
+  async generateCaptcha(@Res() res, @Req() req) {
     const captcha = await this.authService.captche();
     const uuid = uuidv4().replace(/-/g, '');
-    session.captchaUuid = uuid;
-    session.captchaCode = captcha.text
+    req.session.captchaUuid = uuid;
+    req.session.captchaCode = captcha.text
     console.log(uuid)
     console.log(captcha.text)
     res.send({
@@ -39,12 +36,10 @@ export class AuthController {
     })
   }
 
-  @ApiCreatedResponse({
-    description: 'The record has been successfully created.',
-  })
+  @ApiOperation({ summary: '用户登录' })
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  async login(@Res() res, @Req() req, @Body() data: LoginPostDataDto) {
+  async login(@Res() res, @Req() req, @Query() data: LoginPostDataDto) {
     const { verifyCodeKey, verifyCode, username, password } = data;
     // 判断验证码是否过期
     if (verifyCodeKey !== req.session.captchaUuid) {
@@ -82,5 +77,17 @@ export class AuthController {
       msg: '一切ok'
     })
     return;
+  }
+
+  @ApiOperation({ summary: '退出登录' })
+  @Delete("logout")
+  async logout(@Req() req, @Res() res) {
+    req.session.destroy()
+    res.send({
+      code: "00000",
+      msg: "一切ok",
+      data: "注销成功"
+    })
+    return false;
   }
 }

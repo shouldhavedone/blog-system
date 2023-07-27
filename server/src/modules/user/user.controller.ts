@@ -1,10 +1,10 @@
 import { Controller, Get, Res, Headers, Query } from "@nestjs/common";
 import { UserService } from "./user.service";
-import { ApiCreatedResponse, ApiTags } from '@nestjs/swagger';
+import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
 import { UserQueryDto } from "./user.dto";
 
-@ApiTags("user")
+@ApiTags("用户管理相关")
 @Controller("/api/v1/users")
 
 export class UserController {
@@ -14,9 +14,7 @@ export class UserController {
     private readonly authService: AuthService,
   ) { }
 
-  @ApiCreatedResponse({
-    description: 'The record has been successfully created.',
-  })
+  @ApiOperation({ summary: "当前角色信息-权限" })
   @Get('me')
   async getUserInfo(@Headers('authorization') authorizationHeader, @Res() res) {
     const username = this.authService.extractUsernameFromToken(authorizationHeader)
@@ -28,9 +26,7 @@ export class UserController {
     })
   }
 
-  @ApiCreatedResponse({
-    description: 'The record has been successfully created.',
-  })
+  @ApiOperation({ summary: "分页-用户列表" })
   @Get('page')
   async getUserByPage(@Res() res, @Query() query: UserQueryDto) {
     const data = await this.userService.getUserByPage(query)

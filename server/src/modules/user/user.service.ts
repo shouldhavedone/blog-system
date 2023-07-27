@@ -3,7 +3,6 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { SysUser } from '../entities/SysUser.entity'
 import { Repository } from "typeorm"
 import { SysRole } from "../entities/SysRole.entity";
-import { PaginationService } from "../../shared/services/pagenation.service";
 import { UserQueryDto } from "./user.dto";
 
 @Injectable()
@@ -14,7 +13,6 @@ export class UserService {
     private sysUserRepository: Repository<SysUser>,
     @InjectRepository(SysRole)
     private sysRoleRepository: Repository<SysRole>,
-    private readonly paginationService: PaginationService<SysUser>
   ) { }
 
   /**
@@ -27,7 +25,7 @@ export class UserService {
       ...user,
       userId: user.id,
       roles: user.roles.map(item => item.code),
-      perm: roles.menus.filter(item => item.perm).map(item => item.perm)
+      perms: roles.menus.filter(item => item.perm).map(item => item.perm)
     }
     delete params.id;
 
