@@ -3,7 +3,7 @@ import { DeptService } from "./dept.service";
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DeptQueryDto } from './dept.dto';
 
-@ApiTags("部门管理相关")
+@ApiTags("部门")
 @Controller("/api/v1/dept")
 
 export class DeptController {

@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DictService } from './dict.service';
 import { DictAddDto, DictQueryDto } from './dict.dto';
 
-@ApiTags("字典管理相关")
+@ApiTags("字典")
 @Controller("/api/v1/dict")
 
 export class DictController {

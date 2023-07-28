@@ -4,7 +4,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
 import { UserQueryDto } from "./user.dto";
 
-@ApiTags("用户管理相关")
+@ApiTags("用户")
 @Controller("/api/v1/users")
 
 export class UserController {

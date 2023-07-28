@@ -5,7 +5,7 @@ import { AuthService } from '../auth/auth.service';
 import { MenuDto, QueryMenuDto } from './menu.dto';
 import { SysMenu } from '../entities/SysMenu.entity';
 
-@ApiTags("菜单管理相关")
+@ApiTags("菜单")
 @Controller("/api/v1/menus")
 
 export class MenuController {

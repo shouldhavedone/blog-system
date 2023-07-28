@@ -3,7 +3,7 @@ import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DictTypeService } from './dictType.service';
 import { DictTypeQueryDto, DictTypeAddDto } from './dictType.dto';
 
-@ApiTags("字典类型相关")
+@ApiTags("字典类型")
 @Controller("/api/v1/dict/types")
 
 export class DictTypeController {

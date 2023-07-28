@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 
 import { AuthGuard } from '@nestjs/passport';
 
-@ApiTags("用户权限/登录相关")
+@ApiTags("用户权限/登录")
 @Controller('/api/v1/auth')
 
 export class AuthController {

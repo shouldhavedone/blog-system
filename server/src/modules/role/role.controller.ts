@@ -3,7 +3,7 @@ import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RoleService } from './role.service,';
 import { RoleQueryDto } from './role.dto';
 
-@ApiTags("角色管理相关")
+@ApiTags("角色")
 @Controller("/api/v1/roles")
 
 export class RoleController {
