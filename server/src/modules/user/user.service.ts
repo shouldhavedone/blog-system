@@ -93,4 +93,13 @@ export class UserService {
     }
     return true
   }
+
+   /**
+   * 详情
+   * @param id 
+   */
+   async detail(id: number) {
+    const res = await this.sysUserRepository.findOneBy({ id })
+    return res;
+  }
 }

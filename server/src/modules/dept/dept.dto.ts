@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class DeptQueryDto {
+export class QueryDeptDto {
   @ApiProperty({
     default: null,
     required: false,
@@ -13,3 +13,33 @@ export class DeptQueryDto {
   })
   status: number;
 }
+
+export class AddyDeptDto {
+  @ApiProperty({
+    default: '',
+  })
+  name: string;
+
+  @ApiProperty({
+    default: 0,
+  })
+  parentId: number;
+
+  @ApiProperty({
+    default: 1,
+  })
+  sort: number;
+
+  @ApiProperty({
+    default: 1,
+    required: false,
+  })
+  status: number;
+
+  @ApiProperty({
+    default: 0,
+    required: false,
+  })
+  deleted: number;
+}
+

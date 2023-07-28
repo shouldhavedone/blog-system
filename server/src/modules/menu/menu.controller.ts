@@ -3,7 +3,7 @@ import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
 import { AuthService } from '../auth/auth.service';
 import { MenuDto, QueryMenuDto } from './menu.dto';
-import { SysMenu } from '../entities/SysMenu.entity';
+import { filterToOption } from '../../shared/utils/tree.util'
 
 @ApiTags("菜单")
 @Controller("/api/v1/menus")
@@ -53,5 +53,29 @@ export class MenuController {
       data: result,
       msg: '一切ok'
     })
+  }
+
+  @ApiOperation({ summary: "详情" })
+  @Get(":id/form")
+  async getDetail(@Res() res, @Param("id") id: number) {
+    const result = await this.menuService.detail(id)
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
+
+  @ApiOperation({ summary: '获取菜单列表-下拉选项' })
+  @Get('options')
+  async getAllList(@Res() res) {
+    const result = await this.menuService.getAllMenu({})
+    const data = filterToOption(result)
+    res.send({
+      code: "00000",
+      data,
+      msg: '一切ok'
+    })
+    return;
   }
 }

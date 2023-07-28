@@ -55,4 +55,15 @@ export class RoleController {
       msg: '一切ok'
     })
   }
+
+  @ApiOperation({ summary: "详情" })
+  @Get(":id/form")
+  async getDetail(@Res() res, @Param("id") id: number) {
+    const result = await this.roleService.detail(id)
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
 }

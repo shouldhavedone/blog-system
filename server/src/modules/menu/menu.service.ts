@@ -51,7 +51,6 @@ export class MenuService {
     return treeData
   }
 
-
   /**
    * 删除、批量删除
    * @param idArray
@@ -61,5 +60,14 @@ export class MenuService {
       await this.sysMenuRepository.delete(id);
     }
     return true
+  }
+
+  /**
+  * 详情
+  * @param id 
+  */
+  async detail(id: number) {
+    const res = await this.sysMenuRepository.findOneBy({ id })
+    return res;
   }
 }

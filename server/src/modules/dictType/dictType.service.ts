@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { DictTypeQueryDto, DictTypeAddDto } from './dictType.dto';
+import { QueryDictTypeDto, AddDictTypeDto, UpdateDictTypeDto } from './dictType.dto';
 import { SysDictType } from '../entities/SysDictType.entity';
 
 
@@ -12,7 +12,7 @@ export class DictTypeService {
     private sysDicTypetRepository: Repository<SysDictType>
   ) { }
 
-  async getDictTypeByPage(query: DictTypeQueryDto) {
+  async getDictTypeByPage(query: QueryDictTypeDto) {
     const { pageNum, pageSize, keywords } = query;
     const skip = (pageNum - 1) * pageSize
 
@@ -32,7 +32,7 @@ export class DictTypeService {
    * 添加
    * @param data 
    */
-  async add(data: DictTypeAddDto) {
+  async add(data: AddDictTypeDto) {
     const newDictType = this.sysDicTypetRepository.create(data)
     const res = await this.sysDicTypetRepository.save(newDictType)
     return res
@@ -48,5 +48,27 @@ export class DictTypeService {
       await this.sysDicTypetRepository.delete(id);
     }
     return true
+  }
+
+
+  /**
+   * 详情
+   * @param id 
+   */
+  async detail(id: number) {
+    const res = await this.sysDicTypetRepository.findOneBy({ id })
+    return res;
+  }
+
+
+  /**
+   * 修改
+   * @param id 
+   * @param data 
+   */
+  async update(id: number, data: UpdateDictTypeDto) {
+    const dataToUpdate = { id, ...data };
+    const res = await this.sysDicTypetRepository.update(id, dataToUpdate)
+    return res;
   }
 }

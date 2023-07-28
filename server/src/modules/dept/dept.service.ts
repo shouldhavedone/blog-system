@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { SysDept } from '../entities/SysDept.entity';
 import { buildTree } from "src/shared/utils/tree.util";
-import { DeptQueryDto } from './dept.dto';
+import { QueryDeptDto, AddyDeptDto } from './dept.dto';
 
 @Injectable()
 export class DeptService {
@@ -12,8 +12,12 @@ export class DeptService {
     @InjectRepository(SysDept)
     private sysDeptRepository: Repository<SysDept>,
   ) { }
-
-  async getDeptList(query: DeptQueryDto) {
+  
+  /**
+   * 全部数据
+   * @param query 
+   */
+  async getList(query: QueryDeptDto) {
     const queryBuilder = this.sysDeptRepository
       .createQueryBuilder('dept')
       .where('dept.name LIKE :name', { name: `%${query.keywords || ''}%` })
@@ -25,7 +29,11 @@ export class DeptService {
     return treeData;
   }
 
-  async getAllDeptList() {
+
+  /**
+   * 全部数据 - 下拉列表
+   */
+  async getAllList() {
     const res = await this.sysDeptRepository.find({})
     const treeData = buildTree(res)
     return treeData
@@ -40,5 +48,43 @@ export class DeptService {
       await this.sysDeptRepository.delete(id);
     }
     return true
+  }
+
+  /**
+* 添加
+* @param data 
+*/
+  async add(data: AddyDeptDto) {
+    const parent = await this.sysDeptRepository.findOne({ where: { id: data.parentId } })
+    if (!parent) {
+      data.parentId = null;
+    }
+    const newDict = new SysDept()
+    for (let key in data) {
+      newDict[key] = data[key]
+    }
+    newDict['treePath'] = parent ? `${parent.treePath},${parent.id}` : '0'
+    const res = await this.sysDeptRepository.save(newDict)
+    return res
+  }
+
+   /**
+   * 详情
+   * @param id 
+   */
+   async detail(id: number) {
+    const res = await this.sysDeptRepository.findOneBy({ id })
+    return res;
+  }
+
+  /**
+   * 修改
+   * @param id 
+   * @param data 
+   */
+  async update(id: number, data: AddyDeptDto) {
+    // const dataToUpdate = { id, ...data };
+    // const res = await this.sysDeptRepository.update(id, dataToUpdate)
+    // return res;
   }
 }

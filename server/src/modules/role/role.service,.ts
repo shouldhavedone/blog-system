@@ -49,4 +49,14 @@ export class RoleService {
     }
     return true
   }
+
+  
+   /**
+   * 详情
+   * @param id 
+   */
+   async detail(id: number) {
+    const res = await this.sysRoleRepository.findOneBy({ id })
+    return res;
+  }
 }

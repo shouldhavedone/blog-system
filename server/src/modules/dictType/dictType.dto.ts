@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class DictTypeQueryDto {
+export class QueryDictTypeDto {
   @ApiProperty({
     default: 1
   })
@@ -19,7 +19,7 @@ export class DictTypeQueryDto {
 }
 
 
-export class DictTypeAddDto {
+export class AddDictTypeDto {
   @ApiProperty({
     default: ''
   })
@@ -41,4 +41,45 @@ export class DictTypeAddDto {
     required: false,
   })
   status: number;
+}
+
+export class UpdateDictTypeDto {
+  @ApiProperty({
+    default: ''
+  })
+  code: string;
+
+  @ApiProperty({
+    default: '',
+    required: false
+  })
+  createTime: string;
+
+  @ApiProperty({
+    default: ''
+  })
+  id: number;
+
+  @ApiProperty({
+    default: ''
+  })
+  name: string;
+
+  @ApiProperty({
+    default: '',
+    required: false,
+  })
+  remark: string;
+
+  @ApiProperty({
+    default: 1,
+    required: false,
+  })
+  status: number;
+
+  @ApiProperty({
+    default: 1,
+    required: false,
+  })
+  updateTime: string;
 }
