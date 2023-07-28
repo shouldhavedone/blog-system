@@ -82,4 +82,15 @@ export class UserService {
       total,
     };
   }
+
+  /**
+   * 删除、批量删除
+   * @param idArray
+   */
+  async delete(idArray: number[]) {
+    for (const id of idArray) {
+      await this.sysUserRepository.delete(id);
+    }
+    return true
+  }
 }

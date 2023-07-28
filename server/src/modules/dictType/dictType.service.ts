@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { DictTypeQueryDto } from './dictType.dto';
+import { DictTypeQueryDto, DictTypeAddDto } from './dictType.dto';
 import { SysDictType } from '../entities/SysDictType.entity';
 
 
@@ -10,7 +10,7 @@ export class DictTypeService {
   constructor(
     @InjectRepository(SysDictType)
     private sysDicTypetRepository: Repository<SysDictType>
-  ) {}
+  ) { }
 
   async getDictTypeByPage(query: DictTypeQueryDto) {
     const { pageNum, pageSize, keywords } = query;
@@ -25,5 +25,28 @@ export class DictTypeService {
       list: data,
       total,
     }
+  }
+
+
+  /**
+   * 添加
+   * @param data 
+   */
+  async add(data: DictTypeAddDto) {
+    const newDictType = this.sysDicTypetRepository.create(data)
+    const res = await this.sysDicTypetRepository.save(newDictType)
+    return res
+  }
+
+
+  /**
+   * 删除、批量删除
+   * @param idArray
+   */
+  async delete(idArray: number[]) {
+    for (const id of idArray) {
+      await this.sysDicTypetRepository.delete(id);
+    }
+    return true
   }
 }

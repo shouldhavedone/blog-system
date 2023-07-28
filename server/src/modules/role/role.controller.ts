@@ -1,4 +1,4 @@
-import { Controller, Get, Query, Res } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Query, Res } from "@nestjs/common";
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
 import { RoleService } from './role.service,';
 import { RoleQueryDto } from './role.dto';
@@ -42,4 +42,17 @@ export class RoleController {
     return;
   }
 
+
+  
+  @ApiOperation({ summary: "删除角色" })
+  @Delete(':ids')
+  async delete(@Res() res, @Param('ids') ids: string) {
+    const idArray = ids.split(',').map(Number);
+    const result = await this.roleService.delete(idArray);
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
 }

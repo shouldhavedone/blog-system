@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Headers, Query } from "@nestjs/common";
+import { Controller, Get, Res, Headers, Query, Delete, Param } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
@@ -34,6 +34,19 @@ export class UserController {
       code: '00000',
       data: data,
       msg: "一切ok"
+    })
+  }
+
+  
+  @ApiOperation({ summary: "删除用户" })
+  @Delete(':ids')
+  async delete(@Res() res, @Param('ids') ids: string) {
+    const idArray = ids.split(',').map(Number);
+    const result = await this.userService.delete(idArray);
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
     })
   }
 }

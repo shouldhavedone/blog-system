@@ -38,4 +38,15 @@ export class RoleService {
     const res = await this.sysRoleRepository.find({})
     return res;
   }
+
+  /**
+   * 删除、批量删除
+   * @param idArray
+   */
+  async delete(idArray: number[]) {
+    for (const id of idArray) {
+      await this.sysRoleRepository.delete(id);
+    }
+    return true
+  }
 }

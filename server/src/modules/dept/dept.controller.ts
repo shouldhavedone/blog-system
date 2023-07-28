@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Headers, Req, Query } from "@nestjs/common";
+import { Controller, Get, Res, Headers, Req, Query, Param, Delete } from "@nestjs/common";
 import { DeptService } from "./dept.service";
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DeptQueryDto } from './dept.dto';
@@ -42,6 +42,20 @@ export class DeptController {
     })
     return;
   }
+
+
+  @ApiOperation({ summary: "删除部门" })
+  @Delete(':ids')
+  async delete(@Res() res, @Param('ids') ids: string) {
+    const idArray = ids.split(',').map(Number);
+    const result = await this.deptService.delete(idArray);
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
+
 
   filterToOption(data: any) {
     if (!data || data.length === 0) {

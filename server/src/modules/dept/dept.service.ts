@@ -30,4 +30,15 @@ export class DeptService {
     const treeData = buildTree(res)
     return treeData
   }
+
+  /**
+   * 删除、批量删除
+   * @param idArray
+   */
+  async delete(idArray: number[]) {
+    for (const id of idArray) {
+      await this.sysDeptRepository.delete(id);
+    }
+    return true
+  }
 }

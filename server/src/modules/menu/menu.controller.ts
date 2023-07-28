@@ -1,4 +1,4 @@
-import { Controller, Get, Res, Headers, Query } from "@nestjs/common";
+import { Controller, Get, Res, Headers, Query, Delete, Param } from "@nestjs/common";
 import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 import { MenuService } from './menu.service';
 import { AuthService } from '../auth/auth.service';
@@ -40,5 +40,18 @@ export class MenuController {
       msg: '一切ok'
     })
     return;
+  }
+
+  
+  @ApiOperation({ summary: "删除菜单" })
+  @Delete(':ids')
+  async delete(@Res() res, @Param('ids') ids: string) {
+    const idArray = ids.split(',').map(Number);
+    const result = await this.menuService.delete(idArray);
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
   }
 }
