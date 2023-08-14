@@ -12,7 +12,7 @@ export class DeptService {
     @InjectRepository(SysDept)
     private sysDeptRepository: Repository<SysDept>,
   ) { }
-  
+
   /**
    * 全部数据
    * @param query 
@@ -21,6 +21,7 @@ export class DeptService {
     const queryBuilder = this.sysDeptRepository
       .createQueryBuilder('dept')
       .where('dept.name LIKE :name', { name: `%${query.keywords || ''}%` })
+      .addOrderBy("dept.sort", "ASC")
     if (query.status != undefined) {
       queryBuilder.andWhere('dept.status = :status', { status: query?.status })
     }
@@ -51,9 +52,9 @@ export class DeptService {
   }
 
   /**
-* 添加
-* @param data 
-*/
+  * 添加
+  * @param data 
+  */
   async add(data: AddDeptDto) {
     const parent = await this.sysDeptRepository.findOne({ where: { id: data.parentId } })
     if (!parent) {
@@ -68,11 +69,11 @@ export class DeptService {
     return res
   }
 
-   /**
-   * 详情
-   * @param id 
-   */
-   async detail(id: number) {
+  /**
+  * 详情
+  * @param id 
+  */
+  async detail(id: number) {
     const res = await this.sysDeptRepository.findOne({
       where: { id },
       relations: ['parentId'],

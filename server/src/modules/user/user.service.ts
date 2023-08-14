@@ -1,10 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm"
 import { SysUser } from '../entities/SysUser.entity'
-import { Repository } from "typeorm"
+import { Brackets, Repository } from "typeorm"
 import { SysRole } from "../entities/SysRole.entity";
 import { QueryUserDto, UpdateUserDto } from "./user.dto";
 import { AuthService } from '../auth/auth.service';
+import { SysDept } from '../entities/SysDept.entity';
+import { SysDict } from '../entities/SysDict.entity';
 
 @Injectable()
 export class UserService {
@@ -14,7 +16,13 @@ export class UserService {
     private sysUserRepository: Repository<SysUser>,
     @InjectRepository(SysRole)
     private sysRoleRepository: Repository<SysRole>,
-    private readonly authService: AuthService
+    @InjectRepository(SysDept)
+    private sysDeptRepository: Repository<SysDept>,
+    @InjectRepository(SysDict)
+    private sysDictRepository: Repository<SysDict>,
+    private readonly authService: AuthService,
+
+
   ) { }
 
   /**
@@ -29,7 +37,6 @@ export class UserService {
       roles: user.roles.map(item => item.code),
       perms: roles.menus.filter(item => item.perm).map(item => item.perm)
     }
-    delete params.id;
     return params;
   }
 
@@ -49,13 +56,12 @@ export class UserService {
       .createQueryBuilder('role')
       .leftJoinAndSelect('role.menus', 'menu')
       .select()
-      // .where('role.id = :id', { id: user.roles[0].id })
       .where('role.id IN (:...ids)', { ids: user.roles.map(item => item.id) })
-      .getOne()
+      .getMany()
 
     return {
       user,
-      roles,
+      roles: roles[0],
     }
   }
 
@@ -69,17 +75,38 @@ export class UserService {
     const skip = (pageNum - 1) * pageSize
     const queryBuilder = this.sysUserRepository
       .createQueryBuilder('user')
-      .where('user.username LIKE :name', { name: `%${keywords || ''}%` })
-
+      .leftJoinAndSelect('user.roles', 'role')
+      .leftJoinAndSelect('user.dept', 'dept')
+      .where(
+        new Brackets(qb => {
+          qb.where("user.username LIKE :keyword", { keyword: `%${keywords || ''}%` })
+            .orWhere("user.nickname LIKE :keyword", { keyword: `%${keywords || ''}%` })
+            .orWhere("user.mobile LIKE :keyword", { keyword: `%${keywords || ''}%` });
+        })
+      )
     if (status != undefined) {
       queryBuilder.andWhere('user.status = :status', { status })
     }
+
     if (deptId != undefined) {
-      queryBuilder.andWhere('user.deptId = :deptId', { deptId })
+      queryBuilder.andWhere('user.deptId = :deptId', { deptId: Number(deptId) })
     }
+
     const [data, total] = await queryBuilder.skip(skip).take(pageSize).getManyAndCount();
+    const sexDict = await this.sysDictRepository.find({
+      where: { typeCode: "gender" },
+      select: ['value', 'name',]
+    })
+    const tempData = data.map(item => {
+      return {
+        ...item,
+        deptName: item.dept?.name,
+        roleName: item.roles?.map(role => role.name)?.join(","),
+        genderLabel: sexDict.find(sex => Number(sex.value) === item.gender)?.name
+      }
+    })
     return {
-      list: data,
+      list: tempData,
       total,
     };
   }
@@ -100,7 +127,13 @@ export class UserService {
   * @param id 
   */
   async detail(id: number) {
-    const res = await this.sysUserRepository.findOneBy({ id })
+    const res = await this.sysUserRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.roles', 'role')
+      .leftJoinAndSelect('user.dept', 'dept')
+      .where('user.id = :id', { id })
+      .select(['user.id', 'user.avatar', 'user.email', 'user.gender', 'user.mobile', 'user.nickname', 'user.status', 'user.username', 'role.id', 'dept.id'])
+      .getOne();
     return res;
   }
 
@@ -116,9 +149,61 @@ export class UserService {
   }
 
 
+  /**
+   * 修改用户状态
+   * @param id 
+   * @param query 
+   */
   async updateStatus(id: number, query: UpdateUserDto) {
     console.log(query)
     const res = await this.sysUserRepository.update(id, { status: query.status })
+    return res;
+  }
+
+  /**
+   * 修改
+   * @param id 
+   * @param data 
+   */
+  async update(id: number, data: UpdateUserDto) {
+    const user = await this.sysUserRepository.findOneBy({ id })
+    const roles = await this.sysRoleRepository
+      .createQueryBuilder('role')
+      .select()
+      .where('role.id IN (:...ids)', { ids: data.roleIds.map(Number) })
+      .getMany()
+
+    const dept = await this.sysDeptRepository.findOneBy({ id: Number(data.deptId) })
+
+    const newUser = {
+      ...user,
+      roles,
+      dept,
+    }
+
+    const res = await this.sysUserRepository.save(newUser)
+    return res;
+  }
+
+  /**
+  * 添加
+  * @param data 
+  */
+  async add(data: UpdateUserDto) {
+    const roles = await this.sysRoleRepository
+      .createQueryBuilder('role')
+      .select()
+      .where('role.id IN (:...ids)', { ids: data.roleIds.map(Number) })
+      .getMany()
+
+    const dept = await this.sysDeptRepository.findOneBy({ id: Number(data.deptId) })
+    const newUser = new SysUser()
+    for (let key in data) {
+      newUser[key] = data[key]
+    }
+    newUser.roles = roles;
+    newUser.dept = dept;
+    const res = await this.sysUserRepository.save(newUser)
     return res;
   }
 }

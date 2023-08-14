@@ -15,7 +15,7 @@ export class QueryUserDto {
     default: null,
     required: false,
   })
-  keywords: string; 
+  keywords: string;
 
   @ApiProperty({
     default: null,
@@ -42,4 +42,57 @@ export class UpdateUserDto {
     required: false,
   })
   status: number;
+
+  @ApiProperty({
+    default: null,
+    required: false,
+  })
+  id: number;
+
+  @ApiProperty({
+    default: null,
+    required: false,
+  })
+  deptId: number;
+
+  @ApiProperty({
+    default: '',
+    required: false,
+  })
+  avatar: string;
+
+  @ApiProperty({
+    default: '',
+    required: false,
+  })
+  email: string;
+
+  @ApiProperty({
+    default: 1,
+    required: false,
+  })
+  gender: number;
+
+  @ApiProperty({
+    default: null,
+    required: false,
+  })
+  mobile: string;
+
+  @ApiProperty({
+    default: '',
+  })
+  nickname: string;
+
+  @ApiProperty({
+    default: [],
+  })
+  roleIds: number[];
+
+  @ApiProperty({
+    default: '',
+  })
+  username: string;
+
 }
+

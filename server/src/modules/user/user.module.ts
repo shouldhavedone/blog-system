@@ -6,13 +6,14 @@ import { TypeOrmModule } from '@nestjs/typeorm'
 import { AuthService } from '../auth/auth.service';
 import { JwtService } from '@nestjs/jwt';
 import { SysRole } from '../entities/SysRole.entity';
-import { PaginationService } from '../../shared/services/pagenation.service'
 import { Repository } from 'typeorm';
+import { SysDept } from '../entities/SysDept.entity';
+import { SysDict } from "../entities/SysDict.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SysUser, SysRole]),],
+  imports: [TypeOrmModule.forFeature([SysUser, SysRole, SysDept, SysDict]),],
   controllers: [UserController],
-  providers: [UserService, AuthService, JwtService, PaginationService, Repository]
+  providers: [UserService, AuthService, JwtService, Repository]
 })
 
 export class UserModule { }

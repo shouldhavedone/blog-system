@@ -52,6 +52,7 @@ export class MenuService {
     const res = await this.sysMenuRepository
       .createQueryBuilder('menu')
       .where('menu.name LIKE :name', { name: `%${query.keywords || ''}%` })
+      .addOrderBy("menu.sort", "ASC")
       .getMany()
     const menuData = res.map(item => {
       return {
@@ -116,7 +117,7 @@ export class MenuService {
    * @param id 
    * @param data 
    */
-  async update(id: number, data) {
+  async update(id: number, data: any) {
     const dataToUpdate = { ...data, id, parentId: Number(data.parentId) };
     if (data.parentId != 0) {
       const parent = await this.sysMenuRepository.findOneBy({ id: dataToUpdate.parentId })

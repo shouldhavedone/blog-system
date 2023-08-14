@@ -97,11 +97,7 @@ export class AuthService {
    * @param password 
    */
   async encryptionPwd(password: string) {
-    const [err, hash] = await bcrypt.hash(password, saltRounds,);
-    if (err) {
-      console.error('Error hashing password:', err);
-      return '';
-    }
-    return hash;
+    const res = await bcrypt.hash(password, saltRounds,);
+    return res;
   }
 }

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { QueryDictTypeDto, AddDictTypeDto, UpdateDictTypeDto } from './dictType.dto';
 import { SysDictType } from '../entities/SysDictType.entity';
 
@@ -18,7 +18,12 @@ export class DictTypeService {
 
     const queryBuilder = this.sysDicTypetRepository
       .createQueryBuilder("dictType")
-      .where("dictType.name LIKE :name", { name: `%${keywords || ''}%` })
+      .where(
+        new Brackets(qb => {
+          qb.where("dictType.name LIKE :keyword", { keyword: `%${keywords || ''}%` })
+            .orWhere("dictType.code LIKE :keyword", { keyword: `%${keywords || ''}%` })
+        })
+      )
 
     const [data, total] = await queryBuilder.skip(skip).take(pageSize).getManyAndCount()
     return {

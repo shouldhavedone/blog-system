@@ -1,9 +1,8 @@
-import { Controller, Get, Res, Headers, Query, Delete, Param, Patch, Req } from "@nestjs/common";
+import { Controller, Get, Res, Headers, Query, Delete, Param, Patch, Req, Put, Body, Post } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { AuthService } from '../auth/auth.service';
-import { QueryUserDto } from "./user.dto";
-import { query } from "express";
+import { QueryUserDto, UpdateUserDto } from "./user.dto";
 
 @ApiTags("用户")
 @Controller("/api/v1/users")
@@ -57,7 +56,11 @@ export class UserController {
     const result = await this.userService.detail(id)
     res.send({
       code: "00000",
-      data: result,
+      data: {
+        ...result,
+        deptId: result.dept?.id,
+        roleIds: result.roles?.map(item => item.id)
+      },
       msg: '一切ok'
     })
   }
@@ -84,4 +87,27 @@ export class UserController {
       msg: '一切ok'
     })
   }
+
+  @ApiOperation({ summary: "编辑用户" })
+  @Put(":id")
+  async update(@Res() res, @Param('id') id: number, @Body() data: UpdateUserDto) {
+    const result = await this.userService.update(id, data)
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
+
+  @ApiOperation({ summary: "新增用户"})
+  @Post("")
+  async add(@Res() res, @Body() data: UpdateUserDto) {
+    const result = await this.userService.add(data)
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
+
 }

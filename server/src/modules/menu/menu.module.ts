@@ -8,13 +8,14 @@ import { JwtService } from "@nestjs/jwt";
 import { SysMenu } from "../entities/SysMenu.entity";
 import { UserService } from '../user/user.service';
 import { SysRole } from '../entities/SysRole.entity';
-import { PaginationService } from '../../shared/services/pagenation.service'
 import { Repository } from 'typeorm';
+import { SysDept } from '../entities/SysDept.entity';
+import { SysDict } from "../entities/SysDict.entity";
 
 @Module({
-  imports: [TypeOrmModule.forFeature([SysUser, SysMenu, SysRole]) ],
+  imports: [TypeOrmModule.forFeature([SysUser, SysMenu, SysRole, SysDept, SysDict]) ],
   controllers: [MenuController],
-  providers: [MenuService, AuthService, JwtService, UserService, PaginationService, Repository]
+  providers: [MenuService, AuthService, JwtService, UserService, Repository]
 })
 
 export class MenuModule { }

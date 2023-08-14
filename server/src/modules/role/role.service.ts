@@ -27,6 +27,7 @@ export class RoleService {
     const queryBuilder = this.sysRoleRepository
       .createQueryBuilder("role")
       .where("role.name LIKE :name", { name: `%${keywords || ''}%` })
+      .addOrderBy("role.sort", "ASC");
 
     const [data, total] = await queryBuilder.skip(skip).take(pageSize).getManyAndCount()
     return {

@@ -11,10 +11,12 @@ import { UserService } from '../user/user.service';
 import { SysRole } from '../entities/SysRole.entity';
 import { PaginationService } from '../../shared/services/pagenation.service'
 import { Repository } from 'typeorm';
+import { SysDept } from '../entities/SysDept.entity';
+import { SysDict } from "../entities/SysDict.entity";
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([SysUser, SysRole]),
+    TypeOrmModule.forFeature([SysUser, SysRole, SysDept, SysDict]),
     JwtModule.register({
       secret: jwtConstants.secret,
       signOptions: { expiresIn: '1d' }, // 设置 Token 过期时间
