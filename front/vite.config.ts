@@ -35,23 +35,18 @@ export default defineConfig({
   */
   // outDir: 'dist',
   server: {
-    // hostname: '0.0.0.0',
-    // host: "localhost",
-    // port: 3001,
     // // 是否自动在浏览器打开
-    open: true,
-    // // 是否开启 https
-    // https: false,
-    // // 服务端渲染
-    // ssr: false,
-    // proxy: {
-    //   '/api': {
-    //     target: 'http://localhost:3333/',
-    //     changeOrigin: true,
-    //     ws: true,
-    //     rewrite: (pathStr) => pathStr.replace('/api', '')
-    //   },
-    // },
+    host: "0.0.0.0",
+    port: 3000,
+    open: true, // 运行是否自动打开浏览器
+    proxy: {
+      '/api': {
+        target: 'http://localhost:4000/',
+        changeOrigin: true,
+        ws: true,
+        rewrite: (pathStr) => pathStr.replace('/dev-api', '')
+      },
+    },
   },
   resolve: {
     // 导入文件夹别名
