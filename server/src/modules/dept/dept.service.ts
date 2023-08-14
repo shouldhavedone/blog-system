@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { Repository } from "typeorm"
 import { SysDept } from '../entities/SysDept.entity';
 import { buildTree } from "src/shared/utils/tree.util";
-import { QueryDeptDto, AddyDeptDto } from './dept.dto';
+import { QueryDeptDto, AddDeptDto } from './dept.dto';
 
 @Injectable()
 export class DeptService {
@@ -54,7 +54,7 @@ export class DeptService {
 * 添加
 * @param data 
 */
-  async add(data: AddyDeptDto) {
+  async add(data: AddDeptDto) {
     const parent = await this.sysDeptRepository.findOne({ where: { id: data.parentId } })
     if (!parent) {
       data.parentId = null;
@@ -73,7 +73,10 @@ export class DeptService {
    * @param id 
    */
    async detail(id: number) {
-    const res = await this.sysDeptRepository.findOneBy({ id })
+    const res = await this.sysDeptRepository.findOne({
+      where: { id },
+      relations: ['parentId'],
+    })
     return res;
   }
 
@@ -82,9 +85,18 @@ export class DeptService {
    * @param id 
    * @param data 
    */
-  async update(id: number, data: AddyDeptDto) {
-    // const dataToUpdate = { id, ...data };
-    // const res = await this.sysDeptRepository.update(id, dataToUpdate)
-    // return res;
+  async update(id: number, data) {
+    const dataToUpdate = { ...data, id, parentId: Number(data.parentId) };
+    if (data.parentId != 0) {
+      const parent = await this.sysDeptRepository.findOneBy({ id: dataToUpdate.parentId })
+      let treePath = `${parent.treePath},${parent.id}`
+      dataToUpdate.treePath = treePath;
+      dataToUpdate.parentId = parent
+    } else {
+      dataToUpdate.parentId = null
+      dataToUpdate.treePath = '0';
+    }
+    const res = await this.sysDeptRepository.update(id, dataToUpdate)
+    return res;
   }
 }

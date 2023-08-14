@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { SysDict } from '../entities/SysDict.entity';
 import { Repository } from 'typeorm';
 import { QueryDictDto, AddDictDto, UpdateDictDto } from './dict.dto';
+import { buildTree } from 'src/shared/utils/tree.util';
 
 
 @Injectable()
@@ -72,5 +73,14 @@ export class DictService {
     const dataToUpdate = { id, ...data };
     const res = await this.sysDictRepository.update(id, dataToUpdate)
     return res;
+  }
+
+  /**
+   * 全部数据 - 下拉列表
+   */
+  async getAllList() {
+    const res = await this.sysDictRepository.find({})
+    const treeData = buildTree(res)
+    return treeData
   }
 }

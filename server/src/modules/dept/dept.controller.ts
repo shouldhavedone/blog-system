@@ -1,7 +1,7 @@
-import { Controller, Get, Res, Headers, Req, Query, Param, Delete, Post, Body } from "@nestjs/common";
+import { Controller, Get, Res, Headers, Req, Query, Param, Delete, Post, Body, Put } from "@nestjs/common";
 import { DeptService } from "./dept.service";
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
-import { QueryDeptDto, AddyDeptDto } from './dept.dto';
+import { QueryDeptDto, AddDeptDto } from './dept.dto';
 import { filterToOption } from '../../shared/utils/tree.util'
 
 @ApiTags("部门")
@@ -52,7 +52,7 @@ export class DeptController {
 
   @ApiOperation({ summary: "新增部门" })
   @Post("")
-  async add(@Res() res, @Body() data: AddyDeptDto) {
+  async add(@Res() res, @Body() data: AddDeptDto) {
     const result = await this.deptService.add(data)
     res.send({
       code: "00000",
@@ -65,6 +65,20 @@ export class DeptController {
   @Get(":id/form")
   async getDetail(@Res() res, @Param("id") id: number) {
     const result = await this.deptService.detail(id)
+    res.send({
+      code: "00000",
+      data: {
+        ...result,
+        parentId: result.parentId?.id || 0
+      },
+      msg: '一切ok'
+    })
+  }
+
+  @ApiOperation({ summary: "编辑部门" })
+  @Put(":id")
+  async update(@Res() res, @Param('id') id: number, @Body() data: AddDeptDto) {
+    const result = await this.deptService.update(id, data)
     res.send({
       code: "00000",
       data: result,

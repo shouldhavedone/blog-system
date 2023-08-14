@@ -7,16 +7,12 @@ import {
   OneToMany,
   ManyToOne,
   ManyToMany,
-  TreeChildren,
-  TreeParent,
-  Tree
 } from 'typeorm';
 
 import { SysUser } from './SysUser.entity';
 import { SysRole } from './SysRole.entity'
 
 @Entity('sys_menu')
-@Tree("nested-set")
 export class SysMenu {
   // 主键
   @PrimaryGeneratedColumn({
@@ -34,12 +30,6 @@ export class SysMenu {
 
   @OneToMany(() => SysMenu, menu => menu.parentId)
   parentIds: SysMenu[];
-
-  // @TreeChildren()
-  // children: SysMenu[]
-
-  // @TreeParent()
-  // parent: SysMenu
 
   // 父节点id路径
   @Column("varchar", {
@@ -119,18 +109,16 @@ export class SysMenu {
   updateTime?: Date;
 
   // 创建人ID
-  @ManyToOne(() => SysUser, user => user.deptCreates)
-  @JoinColumn({
-    name: "create_by",
+  @Column({
+    type: "int",
   })
-  createBy: SysUser;
+  createBy: number;
 
   // 修改人ID
-  @ManyToOne(() => SysUser, user => user.deptUpdates)
-  @JoinColumn({
-    name: "update_by",
+  @Column({
+    type: "int",
   })
-  updateBy: SysUser;
+  updateBy: number;
 
   @OneToMany(() => SysUser, user => user.dept)
   users: SysUser[];

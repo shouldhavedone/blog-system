@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-export class UserQueryDto {
+export class QueryUserDto {
   @ApiProperty({
     default: 1
   })
@@ -15,7 +15,7 @@ export class UserQueryDto {
     default: null,
     required: false,
   })
-  keywords: string;
+  keywords: string; 
 
   @ApiProperty({
     default: null,
@@ -28,4 +28,18 @@ export class UserQueryDto {
     required: false,
   })
   deptId: number;
+}
+
+export class UpdateUserDto {
+  @ApiProperty({
+    default: null,
+    required: false,
+  })
+  password: string;
+
+  @ApiProperty({
+    default: 1,
+    required: false,
+  })
+  status: number;
 }

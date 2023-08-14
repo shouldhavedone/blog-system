@@ -9,6 +9,8 @@ import { RoleModule } from './modules/role/role.modules';
 import { DictModule } from './modules/dict/dict.modules';
 import { DictTypeModule } from './modules/dictType/dictType.modules';
 
+import { BlogTagModule } from './modules/blog/tag/tag.modules';
+
 @Module({
   imports: [
     databaseConfig,
@@ -19,6 +21,9 @@ import { DictTypeModule } from './modules/dictType/dictType.modules';
     RoleModule,
     DictModule,
     DictTypeModule,
+
+    BlogTagModule,
+    
   ],
   controllers: [],
   providers: [],

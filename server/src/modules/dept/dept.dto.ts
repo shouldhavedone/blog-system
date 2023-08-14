@@ -14,7 +14,7 @@ export class QueryDeptDto {
   status: number;
 }
 
-export class AddyDeptDto {
+export class AddDeptDto {
   @ApiProperty({
     default: '',
   })

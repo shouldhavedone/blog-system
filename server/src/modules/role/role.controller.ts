@@ -1,7 +1,7 @@
-import { Controller, Delete, Get, Param, Query, Res } from "@nestjs/common";
+import { Controller, Delete, Get, Param, Post, Query, Res, Body, Put } from '@nestjs/common';
 import { ApiCreatedResponse, ApiOperation, ApiTags } from '@nestjs/swagger';
-import { RoleService } from './role.service,';
-import { RoleQueryDto } from './role.dto';
+import { RoleService } from './role.service';
+import { RoleQueryDto, AddRoleDto, UpdateRoleDto } from './role.dto';
 
 @ApiTags("角色")
 @Controller("/api/v1/roles")
@@ -43,7 +43,7 @@ export class RoleController {
   }
 
 
-  
+
   @ApiOperation({ summary: "删除角色" })
   @Delete(':ids')
   async delete(@Res() res, @Param('ids') ids: string) {
@@ -66,4 +66,50 @@ export class RoleController {
       msg: '一切ok'
     })
   }
+
+  @ApiOperation({ summary: "新增角色" })
+  @Post('')
+  async add(@Res() res, @Body() data: AddRoleDto) {
+    const result = await this.roleService.add(data)
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
+
+  @ApiOperation({ summary: "编辑字典类型" })
+  @Put(":id")
+  async update(@Res() res, @Param('id') id: number, @Body() data: UpdateRoleDto) {
+    const result = await this.roleService.update(id, data)
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
+
+  @ApiOperation({ summary: "获取角色的菜单ID集合" })
+  @Get(":id/menuIds")
+  async getMenus(@Res() res, @Param('id') roleId: number) {
+    const result = await this.roleService.getMenus(roleId)
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
+
+  @ApiOperation({ summary: "分配菜单权限给角色" })
+  @Put(":id/menus")
+  async updateMenus(@Res() res, @Param('id') roleId: number, @Body() data: number[] | string[]) {
+    const result = await this.roleService.updateMenus(roleId, data.map(Number))
+    res.send({
+      code: "00000",
+      data: result,
+      msg: '一切ok'
+    })
+  }
+
+
 }

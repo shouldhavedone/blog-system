@@ -3,7 +3,8 @@ import { InjectRepository } from "@nestjs/typeorm"
 import { SysUser } from '../entities/SysUser.entity'
 import { Repository } from "typeorm"
 import { SysRole } from "../entities/SysRole.entity";
-import { UserQueryDto } from "./user.dto";
+import { QueryUserDto, UpdateUserDto } from "./user.dto";
+import { AuthService } from '../auth/auth.service';
 
 @Injectable()
 export class UserService {
@@ -13,14 +14,15 @@ export class UserService {
     private sysUserRepository: Repository<SysUser>,
     @InjectRepository(SysRole)
     private sysRoleRepository: Repository<SysRole>,
+    private readonly authService: AuthService
   ) { }
 
   /**
    * 获取用户权限
-   * @param username 用户名
+   * @param userId 用户名
    */
-  async getUserRole(username: string) {
-    const { user, roles } = await this.getUserRoleInfo(username)
+  async getUserRole(userId: number) {
+    const { user, roles } = await this.getUserRoleInfo(userId)
     const params = {
       ...user,
       userId: user.id,
@@ -28,21 +30,20 @@ export class UserService {
       perms: roles.menus.filter(item => item.perm).map(item => item.perm)
     }
     delete params.id;
-
     return params;
   }
 
 
   /**
-   * 
-   * @param username 获取用户账户信息
+   * 获取用户账户信息
+   * @param userId 
    */
-  async getUserRoleInfo(username: string) {
+  async getUserRoleInfo(userId: number) {
     const user = await this.sysUserRepository
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.roles', 'role')
       .select(['user.avatar', 'user.nickname', 'user.id', 'role.code', 'role.id'])
-      .where('user.username = :username', { username: username })
+      .where('user.id = :userId', { userId: userId })
       .getOne()
     const roles = await this.sysRoleRepository
       .createQueryBuilder('role')
@@ -63,7 +64,7 @@ export class UserService {
    * 分页查询用户列表
    * @param query 
    */
-  async getUserByPage(query: UserQueryDto) {
+  async getUserByPage(query: QueryUserDto) {
     const { pageNum, pageSize, keywords, status, deptId } = query;
     const skip = (pageNum - 1) * pageSize
     const queryBuilder = this.sysUserRepository
@@ -94,12 +95,30 @@ export class UserService {
     return true
   }
 
-   /**
-   * 详情
-   * @param id 
-   */
-   async detail(id: number) {
+  /**
+  * 详情
+  * @param id 
+  */
+  async detail(id: number) {
     const res = await this.sysUserRepository.findOneBy({ id })
+    return res;
+  }
+
+  /**
+   * 修改用户密码
+   * @param id 
+   * @param query 
+   */
+  async updatePwd(id: number, query: UpdateUserDto) {
+    const newPwd = await this.authService.encryptionPwd(query.password)
+    const res = await this.sysUserRepository.update(id, { password: newPwd })
+    return res;
+  }
+
+
+  async updateStatus(id: number, query: UpdateUserDto) {
+    console.log(query)
+    const res = await this.sysUserRepository.update(id, { status: query.status })
     return res;
   }
 }

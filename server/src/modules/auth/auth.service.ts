@@ -47,7 +47,7 @@ export class AuthService {
    * @param user 
    */
   async generateToken(user: SysUser): Promise<string> {
-    const payload = { username: user.username };
+    const payload = { userId: user.id };
     return this.jwtService.sign(payload);
   }
 
@@ -82,12 +82,26 @@ export class AuthService {
    * 解析token中的用户名
    * @param token 
    */
-  extractUsernameFromToken(authorizationHeader: string): string {
+  extractUsernameFromToken(authorizationHeader: string): number {
     const token = authorizationHeader.replace('Bearer ', '');
-    const decodedToken = this.jwtService.decode(token) as { username: string };
+    const decodedToken = this.jwtService.decode(token) as { userId: number };
     if (decodedToken) {
-      return decodedToken.username;
+      return decodedToken.userId;
     }
     return null;
+  }
+
+
+  /**
+   * 密码加密
+   * @param password 
+   */
+  async encryptionPwd(password: string) {
+    const [err, hash] = await bcrypt.hash(password, saltRounds,);
+    if (err) {
+      console.error('Error hashing password:', err);
+      return '';
+    }
+    return hash;
   }
 }

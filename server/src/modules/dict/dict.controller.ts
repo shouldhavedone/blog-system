@@ -2,6 +2,7 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Query, Res } from "@ne
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { DictService } from './dict.service';
 import { AddDictDto, QueryDictDto, UpdateDictDto } from './dict.dto';
+import { filterToOption } from "src/shared/utils/tree.util";
 
 @ApiTags("字典")
 @Controller("/api/v1/dict")
@@ -16,6 +17,19 @@ export class DictController {
   @Get('page')
   async getByPage(@Res() res, @Query() query: QueryDictDto) {
     const data = await this.dictService.getDictByPage(query)
+    res.send({
+      code: "00000",
+      data,
+      msg: '一切ok'
+    })
+    return;
+  }
+
+  @ApiOperation({ summary: '获取字典列表-下拉选项' })
+  @Get('options')
+  async getAllList(@Res() res) {
+    const result = await this.dictService.getAllList()
+    const data = filterToOption(result)
     res.send({
       code: "00000",
       data,
