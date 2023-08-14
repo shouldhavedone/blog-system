@@ -1,33 +1,28 @@
 /**
- * 角色查询参数
+ * 标签查询参数
  */
-export interface RoleQuery extends PageQuery {
+export interface BlogTagQuery extends PageQuery {
   keywords?: string;
 }
 
 /**
- * 角色分页对象
+ * 标签分页对象
  */
-export interface RolePageVO {
+export interface BlogTagPageVO {
   /**
-   * 角色编码
-   */
-  code?: string;
-
-  /**
-   * 角色ID
+   * 标签ID
    */
   id?: number;
   /**
-   * 角色名称
+   * 标签名称
    */
   name?: string;
   /**
-   * 排序
+   * 描述
    */
-  sort?: number;
+  desc?: string;
   /**
-   * 角色状态
+   * 标签状态
    */
   status?: number;
   /**
@@ -41,38 +36,34 @@ export interface RolePageVO {
 }
 
 /**
- * 角色分页
+ * 标签分页
  */
-export type RolePageResult = PageResult<RolePageVO[]>;
+export type BlogTagPageResult = PageResult<BlogTagPageVO[]>;
 
 /**
- * 角色表单对象
+ * 标签表单对象
  */
-export interface RoleForm {
+export interface BlogTagForm {
   /**
-   * 角色ID
+   * ID
    */
   id?: number;
 
   /**
-   * 角色编码
+   * 描述
    */
-  code: string;
+  desc: string;
   /**
    * 数据权限
    */
   dataScope?: number;
 
   /**
-   * 角色名称
+   * 标签名称
    */
   name: string;
   /**
-   * 排序
-   */
-  sort?: number;
-  /**
-   * 角色状态(1-正常；0-停用)
+   * 标签状态(1-正常；0-停用)
    */
   status?: number;
 }
