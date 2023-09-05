@@ -2,6 +2,7 @@ import { Body, Controller, Get, Post, Query, Res, Delete, Param, Put } from '@ne
 import { ApiOperation, ApiTags } from '@nestjs/swagger';
 import { BlogTagService } from './tag.service';
 import { QueryBlogTagDto, AddBlogTagDto, UpdateBlogTagDto } from './tag.dto';
+import { filterToOption } from 'src/shared/utils/tree.util';
 
 @ApiTags("标签")
 @Controller("/api/v1/blog/tag")
@@ -66,5 +67,19 @@ export class BlogTagController {
       data: result,
       msg: '一切ok'
     })
+  }
+
+  
+  @ApiOperation({ summary: '获取标签列表-下拉选项' })
+  @Get('options')
+  async getAllList(@Res() res) {
+    const result = await this.blogTagService.getAllList()
+    const data = filterToOption(result)
+    res.send({
+      code: "00000",
+      data,
+      msg: '一切ok'
+    })
+    return;
   }
 }

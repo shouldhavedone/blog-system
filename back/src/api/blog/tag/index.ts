@@ -1,5 +1,5 @@
 import { AxiosPromise } from 'axios';
-import { BlogTagForm, BlogTagQuery, BlogTagVO } from './types';
+import { BlogTagForm, BlogTagQuery, BlogTagVO, BlogTagOption } from './types';
 import request from '@/utils/request';
 
 /**
@@ -63,5 +63,15 @@ export function deleteBlogTag(ids: string) {
   return request({
     url: '/api/v1/blog/tag/' + ids,
     method: 'delete'
+  });
+}
+
+/**
+ * 标签下拉列表
+ */
+export function listTagOptions(): AxiosPromise<BlogTagOption[]> {
+  return request({
+    url: '/api/v1/blog/tag/options',
+    method: 'get'
   });
 }

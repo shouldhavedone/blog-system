@@ -52,6 +52,7 @@ export class MenuService {
     const res = await this.sysMenuRepository
       .createQueryBuilder('menu')
       .where('menu.name LIKE :name', { name: `%${query.keywords || ''}%` })
+      .addOrderBy("menu.id", "ASC")
       .addOrderBy("menu.sort", "ASC")
       .getMany()
     const menuData = res.map(item => {

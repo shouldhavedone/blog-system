@@ -1,6 +1,5 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm"
-import { LoginPostDataDto } from "./auth.dto";
 import { SysUser } from '../entities/SysUser.entity'
 import { Repository } from "typeorm"
 import * as svgCaptcha from 'svg-captcha';

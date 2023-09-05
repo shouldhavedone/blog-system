@@ -57,3 +57,12 @@ export interface BlogTagForm {
    */
   status?: number;
 }
+
+
+/**
+ * 标签下拉列表
+ */
+export interface BlogTagOption {
+  label: string,
+  value: number | string,
+}

@@ -9,6 +9,8 @@ import IconEpMoon from "~icons/ep/moon";
  */
 const settingsStore = useSettingsStore();
 const isDark = useDark();
+
+console.log(isDark.value, '**************')
 const toggleDark = () => useToggle(isDark);
 
 /**

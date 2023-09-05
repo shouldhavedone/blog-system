@@ -10,6 +10,7 @@ import { DictModule } from './modules/dict/dict.modules';
 import { DictTypeModule } from './modules/dictType/dictType.modules';
 
 import { BlogTagModule } from './modules/blog/tag/tag.modules';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -20,10 +21,9 @@ import { BlogTagModule } from './modules/blog/tag/tag.modules';
     DeptModule,
     RoleModule,
     DictModule,
+    FileModule,
     DictTypeModule,
-
     BlogTagModule,
-    
   ],
   controllers: [],
   providers: [],

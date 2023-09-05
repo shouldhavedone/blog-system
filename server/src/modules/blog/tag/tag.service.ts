@@ -71,4 +71,12 @@ export class BlogTagService {
     const res = await this.sysBlogTagRepository.update(id, dataToUpdate)
     return res;
   }
+
+  /**
+   * 全部数据 - 下拉列表
+   */
+  async getAllList() {
+    const res = await this.sysBlogTagRepository.find({})
+    return res
+  }
 }
