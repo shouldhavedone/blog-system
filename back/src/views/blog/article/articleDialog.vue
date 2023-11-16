@@ -5,8 +5,8 @@
     </header>
     <div class="el-dialog__body">
       <el-form ref="formRef" :model="form" label-width="96px" :rules="rules">
-        <el-form-item label="标签：" prop="tag">
-          <el-select v-model="form.tag" placeholder="选择标签">
+        <el-form-item label="标签：" prop="tags">
+          <el-select v-model="form.tags" placeholder="选择标签" multiple>
             <el-option v-for="item in tagOptions" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
@@ -36,7 +36,7 @@
 </template>
 
 <script lang="ts" setup>
-import { reactive } from 'vue'
+import { reactive, watch } from 'vue';
 
 import { ElMessage } from 'element-plus'
 import { Plus } from '@element-plus/icons-vue'
@@ -48,6 +48,12 @@ import { BlogTagOption } from '@/api/blog/tag/types'
 import { BlogArticleEdit } from '@/api/blog/article/types'
 
 const emits = defineEmits(["cancel", "submit"])
+
+interface IProps {
+  data: BlogArticleEdit
+}
+
+const props = defineProps<IProps>()
 
 const formRef = ref<FormInstance>()
 
@@ -62,13 +68,13 @@ const beforerUpload: UploadProps['beforeUpload'] = (rawFile) => {
 }
 
 const form = reactive<BlogArticleEdit>({
-  tag: '',
+  tags: '',
   desc: '',
-  imgUrl: ''
+  imgUrl: '',
 })
 
 const rules = reactive({
-  tag: [{ required: true, message: "请选择标签", trigger: "change" }],
+  tags: [{ required: true, message: "请选择标签", trigger: "change" }],
   desc: [{ required: true, message: "请输入描述", trigger: "blur" }],
   imgUrl: [{ required: true, message: "请上传图片", trigger: "change" }],
 });
@@ -104,6 +110,12 @@ const customRequest = async (options: UploadRequestOptions) => {
 
 onMounted(() => {
   getTagOption()
+})
+
+watch(() => props.data, () => {
+  form.tags = props.data.tags
+  form.desc = props.data.desc
+  form.imgUrl = props.data.imgUrl
 })
 
 </script>

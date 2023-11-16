@@ -2,10 +2,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
-  JoinColumn,
-  OneToMany,
-  ManyToOne,
+ManyToMany,
+JoinTable,
 } from 'typeorm';
 import { BlogTag } from './BlogTag.entity';
 
@@ -21,7 +19,7 @@ export class BlogArticle {
   @Column("varchar", {
     length: 128,
   })
-  name: string;
+  title: string;
 
   // 描述
   @Column("varchar", {
@@ -36,15 +34,16 @@ export class BlogArticle {
   author: number;
 
   // 标签ID
-  @ManyToOne(() => BlogTag, tag => tag.article)
-  tagId?: BlogTag;
+  @ManyToMany(() => BlogTag, tag => tag.articles)
+  @JoinTable()
+  tags: BlogTag[];
 
   // 阅读量
-  @Column("tinyint")
+  @Column("tinyint", { nullable: true, })
   views: number;
 
   // 点赞
-  @Column("tinyint")
+  @Column("tinyint", { nullable: true, })
   likes: number;
 
   // 标题图片
@@ -58,7 +57,7 @@ export class BlogArticle {
   @Column("text")
   content: string;
 
-  // 状态
+  // 状态 0:草稿 1:发布 2:撤回
   @Column("tinyint")
   status: number;
 
@@ -69,17 +68,15 @@ export class BlogArticle {
   // 创建时间
   @Column({
     name: "create_time",
-    type: "datetime",
     nullable: true,
   })
-  createTime?: Date;
+  createTime?: string;
 
   // 更新时间
   @Column({
     name: "update_time",
     nullable: true,
-    type: "datetime"
   })
-  updateTime?: Date;
+  updateTime?: string;
 
 }

@@ -10,10 +10,10 @@
           popper-class="article-dialog"
           popper-style="box-shadow: rgb(14 18 22 / 35%) 0px 10px 38px -10px, rgb(14 18 22 / 20%) 0px 10px 20px -15px; padding: 20px;">
           <template #reference>
-            <el-button type="primary" @click="changeVisiable(true)">发布</el-button>
+            <el-button type="primary" @click.stop="changeVisiable(true)">发布</el-button>
           </template>
           <template #default>
-            <ArticleDialog @submit="handleSubmit" @cancel="handleCancel" />
+            <ArticleDialog :data="formData" @submit="handleSubmit" @cancel="handleCancel" />
           </template>
         </el-popover>
       </div>
@@ -30,7 +30,14 @@ import 'md-editor-v3/lib/style.css';
 
 import ArticleDialog from './articleDialog.vue';
 
-import { reactive, ref } from 'vue'
+import { ref } from 'vue'
+
+import { addBlogArticle, getBlogArticleForm } from "@/api/blog/article";
+import { useRoute, useRouter } from 'vue-router';
+import { BlogArticleEdit } from '@/api/blog/article/types';
+
+const route = useRoute()
+const router = useRouter();
 
 const dialogVisible = ref(false);
 
@@ -38,7 +45,7 @@ const changeVisiable = (value: boolean) => {
   dialogVisible.value = !dialogVisible.value;
 };
 
-const formData = ref({
+const formData = ref<BlogArticleEdit>({
   title: "",
   content: "",
 });
@@ -53,10 +60,31 @@ const handleCancel = () => {
   dialogVisible.value = false;
 }
 
-const handleSubmit = (record: any) => {
-  console.log(record)
-  console.log(formData.value)
+const handleSubmit = async (record: any) => {
+  const params = {
+    ...formData.value,
+    ...record,
+    status: 1,
+  }
+  const result = await addBlogArticle(params);
+  console.log(result)
+  if(result.data) {
+    dialogVisible.value = false
+    ElMessage.success("发布成功")
+    router.replace("/blog/article")
+  }
 }
+
+const getDetail = async (id: string) => {
+  const result = await getBlogArticleForm(id);
+  console.log(result)
+  formData.value = result.data
+}
+
+onMounted(() => {
+  const id = route.params.id
+  id && getDetail(Array.isArray(id) ? id[0] : id);
+})
 
 </script>
 

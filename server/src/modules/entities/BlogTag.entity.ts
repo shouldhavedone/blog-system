@@ -3,10 +3,8 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  OneToOne,
-  JoinColumn,
-  OneToMany,
-  ManyToOne,
+  ManyToMany,
+  JoinTable,
 } from 'typeorm';
 
 @Entity('blog_tag')
@@ -53,6 +51,6 @@ export class BlogTag {
   })
   updateTime?: Date;
 
-  @OneToMany(() => BlogArticle, article => article.tagId)
-  article: BlogArticle[];
+  @ManyToMany(() => BlogArticle, article => article.tags)
+  articles: BlogArticle[];
 }
